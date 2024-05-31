@@ -13,7 +13,7 @@ document.getElementById('signUpForm').addEventListener('submit',(event)=>{
     })
     .then((res)=>{
         console.log(res);
-      // window.location.href = "/login.html"
+       window.location.href = "/login.html"
     })
     .catch((err)=>{
         
