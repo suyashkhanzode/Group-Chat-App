@@ -12,15 +12,17 @@ document.getElementById('logInForm').addEventListener('submit',(event)=>{
        {
        
          const token = res.data.token;
-         //const isPremiumUSer = res.data.isPremiumUSer;
+      
          window.sessionStorage.setItem("token",token);
-        // window.sessionStorage.setItem("isPremiumUSer",isPremiumUSer)
-        // window.location.href = '/expenseDashboard.html'
+       
+           // window.location.href = '/expenseDashboard.html'
+          
        } 
         
     })
     .catch((err)=>{
+        debugger
       
-        alert(`${err.data.message}`)
+        alert(`${err.response.data.message}`)
     })
 })
