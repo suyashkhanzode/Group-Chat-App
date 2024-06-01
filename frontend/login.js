@@ -15,7 +15,7 @@ document.getElementById('logInForm').addEventListener('submit',(event)=>{
       
          window.sessionStorage.setItem("token",token);
        
-           // window.location.href = '/expenseDashboard.html'
+         window.location.href = '/dashboard.html'
           
        } 
         
