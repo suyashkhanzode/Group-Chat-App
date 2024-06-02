@@ -26,10 +26,16 @@ app.use(cors(corsOptions));
 // });
 
 const User = require('./models/user');
+const Chat = require('./models/chat');
+
+User.hasMany(Chat,{onDelete : 'CASCADE',onUpdate : 'CASCADE'})
+Chat.belongsTo(User,{onDelete : 'CASCADE',onUpdate : 'CASCADE'})
 
 const userRoute = require('./routes/user');
+const chatRoute = require('./routes/chat');
 
 app.use('/user',userRoute);
+app.use('/chat',chatRoute)
 
 
 const PORT = process.env.PORT | 3000;
