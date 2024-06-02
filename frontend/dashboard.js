@@ -70,3 +70,7 @@ function showChats(chat) {
 
   ele.appendChild(cardBody);
 }
+
+document.getElementById('groupBtn').addEventListener('click',()=>{
+    window.location.href = '/group.html'
+})

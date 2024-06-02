@@ -9,26 +9,25 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
   <title>Group Chat App</title>
 </head>
-
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
-  <div class=" position-absolute" style="top: 10px; right: 10px;">
-    <button type="button" class="btn btn-dark" id="groupBtn">Create Group</button>
-  </div>
-  <h3 class="position-absolute" style="top: 10px;">Chat App</h3>
-  <div class="card shadow-sm p-4 position-absolute" style="max-width: 1000px; width: 100%; top: 45px;" id="chatBox">
-  
-  </div>
-  <div class="card shadow-sm p-3 position-absolute" style="max-width: 150px; width: 100%; left: 0px; background-color: darkkhaki;" >
-   <h3>Group</h3>
-  </div>
-  <div class="card shadow-sm p-4 position-absolute" style="max-width: 1000px; width: 100%; bottom: 45px;">
-    <div class="input-group mb-3">
-
-      <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" id="messageInput">
-      <button class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
-
+<div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+  <form id="logInForm">
+    <h3 class="text-center mb-4">Group</h3>
+   
+    <div class="form-group">
+      <label for="grpname">Group Name</label>
+      <input type="email" class="form-control" id="grpname" />
     </div>
-  </div>
+     
+     
+    <button type="submit" class="btn btn-success btn-block">Create Group</button>
+    <div class="text-center mt-3">
+    
+    </div>
+  </form>
+</div>
+        
+      
 
 
 
