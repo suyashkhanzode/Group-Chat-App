@@ -16,3 +16,15 @@ exports.addChat =  (req,res,next) =>{
     
 
 }
+
+exports.getChats = (req,res,next) =>{
+    
+     Chat.findAll()
+     .then((result)=>[
+        res.status(200).json({chats:result})
+     ])
+     .catch((err)=>{
+        res.status(500).json({error :err})
+     })
+
+}

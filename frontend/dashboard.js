@@ -14,3 +14,15 @@ document.getElementById("button-addon2").addEventListener("click", () => {
     }
   )
 });
+
+function getChats(){
+    axios.get(`http://localhost:3000/chat/get-chat`)
+    .then((response)=>{
+       console.log(response.data.chats)
+    })
+    .catch((err) =>{
+    
+})
+}
+
+window.onload = getChats();
