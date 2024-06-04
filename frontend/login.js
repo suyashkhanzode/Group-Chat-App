@@ -23,6 +23,6 @@ document.getElementById('logInForm').addEventListener('submit',(event)=>{
     .catch((err)=>{
         debugger
       
-        alert(`${err.response.data.message}`)
+        alert(`${err.message}`)
     })
 })
