@@ -71,6 +71,7 @@ window.onload = function () {
     fetchNewMessages(groupId);
     setInterval(() => fetchNewMessages(groupId), 1000);
   }
+  isMemberAdmin();
 };
 
 function showChats(chat) {
@@ -81,7 +82,7 @@ function showChats(chat) {
   ele.appendChild(cardBody);
 }
 
-document.getElementById("groupBtn").addEventListener("click", () => {
+document.getElementById("createGroupBtn").addEventListener("click", () => {
   window.location.href = "/group.html";
 });
 
@@ -101,4 +102,77 @@ function getGroups() {
   }).catch((err) => {
     console.error("Error fetching groups:", err);
   });
+}
+
+document.getElementById('addUserBtn').addEventListener('click',(event)=>{
+      event.preventDefault();
+   const urlParams = new URLSearchParams(window.location.search);
+  const groupId = Number(urlParams.get("groupId"));
+     const email = document.getElementById('searchInput').value;
+     document.getElementById('searchInput').value = '';
+     axios.post(`http://localhost:3000/admin/add-member/${groupId}`,{
+        email :email
+     })
+     .then((response)=>{
+      
+        alert(response.data.message)
+     })
+     .catch((err)=>{
+       
+        alert(err.response.data.message)
+     })
+})
+
+document.getElementById('removeUserBtn').addEventListener('click',(event)=>{
+  event.preventDefault();
+const urlParams = new URLSearchParams(window.location.search);
+const groupId = Number(urlParams.get("groupId"));
+ const email = document.getElementById('searchInput').value;
+ document.getElementById('searchInput').value = '';
+ axios.post(`http://localhost:3000/admin/remove-member/${groupId}`,{
+    email :email
+ })
+ .then((response)=>{
+  
+    alert(response.data.message)
+ })
+ .catch((err)=>{
+   
+    alert(err.response.data.message)
+ })
+})
+
+document.getElementById('promoteUserBtn').addEventListener('click',(event)=>{
+  event.preventDefault();
+const urlParams = new URLSearchParams(window.location.search);
+const groupId = Number(urlParams.get("groupId"));
+ const email = document.getElementById('searchInput').value;
+ document.getElementById('searchInput').value = '';
+ axios.put(`http://localhost:3000/admin/promote-member/${groupId}`,{
+    email :email
+ })
+ .then((response)=>{
+   
+    alert(response.data.message)
+ })
+ .catch((err)=>{
+  
+    alert(err.response.data.message)
+ })
+})
+
+function isMemberAdmin() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId = Number(urlParams.get("groupId"));
+    axios.get(`http://localhost:3000/admin/is-admin/${groupId}`, {
+      headers: {
+        Authorization: token,
+      },
+    }).then((response)=>{
+        debugger;
+        if(response.data.isAdmin == false)
+        {
+           document.getElementById('manageMember').innerHTML = '';
+        }
+    })
 }

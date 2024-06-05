@@ -17,7 +17,8 @@ exports.addGroup = async (req, res, next) => {
 
     await GroupMember.create({
       userId: userId,
-      groupId: group.id
+      groupId: group.id,
+      isAdmin : true
     }, { transaction: t });
 
     await t.commit();

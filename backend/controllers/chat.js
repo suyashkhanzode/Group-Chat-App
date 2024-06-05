@@ -22,7 +22,7 @@ exports.addChat = (req, res, next) => {
 
 
 exports.getChats = (req, res, next) => {
-  debugger;
+
   const lastMessageId = req.query.lastMessageId;
   const groupId = req.params.groupId;
   let whereCondition = { groupId };

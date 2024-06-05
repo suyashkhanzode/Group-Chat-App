@@ -35,14 +35,17 @@ Group.belongsTo(User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 User.belongsToMany(Group, { through: group_member, onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Group.belongsToMany(User, { through: group_member, onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-// Import routes
+
 const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
 const groupRoute = require('./routes/group');
+const adminRoute = require('./routes/admin');
+
 
 app.use('/user', userRoute);
 app.use('/chat', chatRoute);
 app.use('/group', groupRoute);
+app.use('/admin',adminRoute);
 
 const PORT = process.env.PORT || 3000;
 

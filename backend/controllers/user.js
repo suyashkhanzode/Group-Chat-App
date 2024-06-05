@@ -57,6 +57,7 @@ exports.loginUser = async (req, res, next) => {
     }
     bycript.compare(password, user.password, (err, result) => {
       if (result) {
+
         res.status(200).json({
           message: "User authenticated successfully.",
           token: generateAccessToken(user)
