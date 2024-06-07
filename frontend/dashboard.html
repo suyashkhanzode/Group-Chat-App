@@ -39,6 +39,15 @@
             <button class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
           </div>
         </div>
+        <div class="input-group mb-3">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="fileInput" multiple>
+            <label class="custom-file-label" for="fileInput">Choose file</label>
+          </div>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="fileSendBtn">Send Files</button>
+          </div>
+        </div>
       </div>
       <div class="col-3" id="manageMember">
         <div class="card shadow-sm mb-4">
@@ -65,6 +74,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
   <script src="dashboard.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

@@ -1,26 +1,25 @@
 const token = window.sessionStorage.getItem("token");
+const socket = io('http://localhost:3000', {
+  withCredentials: true,
+  auth: {
+    Authorization: token
+  },
+  transports: ["websocket"]
+});
+
+socket.on("connect_error", (err) => {
+  console.error("Connection Error:", err.message);
+  console.error("Description:", err.description);
+  console.error("Context:", err.context);
+});
 
 document.getElementById("button-addon2").addEventListener("click", () => {
   const message = document.getElementById("messageInput").value;
   document.getElementById("messageInput").value = "";
   const urlParams = new URLSearchParams(window.location.search);
   const groupId = Number(urlParams.get("groupId"));
-
-  axios.post(
-    `http://localhost:3000/chat/add-chat/${groupId}`,
-    {
-      message: message,
-    },
-    {
-      headers: {
-        Authorization: token,
-      },
-    }
-  ).then(response => {
-    fetchNewMessages(groupId); // Fetch new messages after sending a new one
-  }).catch(error => {
-    console.error("Error sending message:", error);
-  });
+  
+  socket.emit('sendMessage', { groupId, message });
 });
 
 function storeMessages(messages) {
@@ -37,41 +36,40 @@ function getStoredMessages() {
 }
 
 function fetchNewMessages(groupId) {
-  const storedMessages = getStoredMessages();
-  const lastMessage = storedMessages[storedMessages.length - 1];
-  const lastMessageId = lastMessage ? lastMessage.id : null;
-
-  axios.get(`http://localhost:3000/chat/get-chat/${groupId}`, {
-    params: {
-      lastMessageId: lastMessageId,
-    },
-  }).then((response) => {
-    const newMessages = response.data.chats;
-    storeMessages(newMessages);
-    newMessages.forEach((chat) => {
-      showChats(chat);
-    });
-  }).catch((err) => {
-    console.error("Error fetching messages:", err);
-  });
+  socket.emit('getMessage', { groupId });
 }
 
 window.onload = function () {
+  socket.on("connect", () => {
+    console.log("Connected to Socket.IO server");
+  });
+
+  isMemberAdmin();
+  
   window.localStorage.clear();
   const messages = getStoredMessages();
   document.getElementById("chatBox").innerHTML = "";
-  messages.forEach((chat) => {
-    showChats(chat);
-  });
+  messages.forEach(showChats);
 
   getGroups();
+
   const urlParams = new URLSearchParams(window.location.search);
   const groupId = Number(urlParams.get("groupId"));
   if (groupId) {
+    socket.emit('joinGroup', groupId);
     fetchNewMessages(groupId);
-    setInterval(() => fetchNewMessages(groupId), 1000);
+    
+    socket.on('newMessage', (chat) => {
+      showChats(chat);
+    });
+
+    socket.on('receiveNewMessages', (messages) => {
+      storeMessages(messages);
+      messages.forEach(showChats);
+    });
   }
-  isMemberAdmin();
+
+  
 };
 
 function showChats(chat) {
@@ -79,19 +77,17 @@ function showChats(chat) {
   const cardBody = document.createElement("div");
   cardBody.className = "card-body";
   cardBody.textContent = `${chat.user.name}: ${chat.message}`;
+  cardBody.innerHTML 
   ele.appendChild(cardBody);
 }
 
-document.getElementById("createGroupBtn").addEventListener("click", () => {
-  window.location.href = "/group.html";
-});
-
 function getGroups() {
-  axios.get(`http://localhost:3000/group/get-group`, {
+  axios.get('http://localhost:3000/group/get-group', {
     headers: {
       Authorization: token,
     },
-  }).then((response) => {
+  })
+  .then((response) => {
     response.data.result.forEach((group) => {
       const ele = document.getElementById("groupBox");
       const aEle = document.createElement("a");
@@ -99,80 +95,76 @@ function getGroups() {
       aEle.href = `/dashboard.html?groupId=${group.id}`;
       ele.appendChild(aEle);
     });
-  }).catch((err) => {
+  })
+  .catch((err) => {
     console.error("Error fetching groups:", err);
   });
 }
 
-document.getElementById('addUserBtn').addEventListener('click',(event)=>{
-      event.preventDefault();
-   const urlParams = new URLSearchParams(window.location.search);
+document.getElementById('addUserBtn').addEventListener('click', (event) => {
+  event.preventDefault();
+  const urlParams = new URLSearchParams(window.location.search);
   const groupId = Number(urlParams.get("groupId"));
-     const email = document.getElementById('searchInput').value;
-     document.getElementById('searchInput').value = '';
-     axios.post(`http://localhost:3000/admin/add-member/${groupId}`,{
-        email :email
-     })
-     .then((response)=>{
-      
-        alert(response.data.message)
-     })
-     .catch((err)=>{
-       
-        alert(err.response.data.message)
-     })
-})
+  const email = document.getElementById('searchInput').value;
+  document.getElementById('searchInput').value = '';
 
-document.getElementById('removeUserBtn').addEventListener('click',(event)=>{
-  event.preventDefault();
-const urlParams = new URLSearchParams(window.location.search);
-const groupId = Number(urlParams.get("groupId"));
- const email = document.getElementById('searchInput').value;
- document.getElementById('searchInput').value = '';
- axios.post(`http://localhost:3000/admin/remove-member/${groupId}`,{
-    email :email
- })
- .then((response)=>{
-  
-    alert(response.data.message)
- })
- .catch((err)=>{
-   
-    alert(err.response.data.message)
- })
-})
+  axios.post(`http://localhost:3000/admin/add-member/${groupId}`, { email })
+    .then((response) => {
+      alert(response.data.message);
+    })
+    .catch((err) => {
+      alert(err.response.data.message);
+    });
+});
 
-document.getElementById('promoteUserBtn').addEventListener('click',(event)=>{
+document.getElementById('removeUserBtn').addEventListener('click', (event) => {
   event.preventDefault();
-const urlParams = new URLSearchParams(window.location.search);
-const groupId = Number(urlParams.get("groupId"));
- const email = document.getElementById('searchInput').value;
- document.getElementById('searchInput').value = '';
- axios.put(`http://localhost:3000/admin/promote-member/${groupId}`,{
-    email :email
- })
- .then((response)=>{
-   
-    alert(response.data.message)
- })
- .catch((err)=>{
-  
-    alert(err.response.data.message)
- })
-})
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId = Number(urlParams.get("groupId"));
+  const email = document.getElementById('searchInput').value;
+  document.getElementById('searchInput').value = '';
+
+  axios.post(`http://localhost:3000/admin/remove-member/${groupId}`, { email })
+    .then((response) => {
+      alert(response.data.message);
+    })
+    .catch((err) => {
+      alert(err.response.data.message);
+    });
+});
+
+document.getElementById('promoteUserBtn').addEventListener('click', (event) => {
+  event.preventDefault();
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId = Number(urlParams.get("groupId"));
+  const email = document.getElementById('searchInput').value;
+  document.getElementById('searchInput').value = '';
+
+  axios.put(`http://localhost:3000/admin/promote-member/${groupId}`, { email })
+    .then((response) => {
+      alert(response.data.message);
+    })
+    .catch((err) => {
+      alert(err.response.data.message);
+    });
+});
 
 function isMemberAdmin() {
   const urlParams = new URLSearchParams(window.location.search);
   const groupId = Number(urlParams.get("groupId"));
-    axios.get(`http://localhost:3000/admin/is-admin/${groupId}`, {
-      headers: {
-        Authorization: token,
-      },
-    }).then((response)=>{
-        debugger;
-        if(response.data.isAdmin == false)
-        {
-           document.getElementById('manageMember').innerHTML = '';
-        }
-    })
+
+  axios.get(`http://localhost:3000/admin/is-admin/${groupId}`, {
+    headers: {
+      Authorization: token,
+    },
+  })
+  .then((response) => {
+    debugger;
+    if (response.data.isAdmin == false) {
+      document.getElementById('manageMember').innerHTML = '';
+    }
+  })
+  .catch((err) => {
+    console.error("Error checking admin status:", err);
+  });
 }

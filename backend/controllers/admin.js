@@ -110,12 +110,18 @@ exports.promoteAdmin = async (req, res, next) => {
 exports.isAdmin = async (req,res,next) =>{
      const  userId = req.user.id;
      const groupId = req.params.groupId;
+
      try {
       const member = await GroupMember.findOne({
          where: { userId: userId, groupId: groupId },
        });
+       if(!member)
+       {
+          return res.status(200).json({isAdmin : false}) 
+       }
        return res.status(200).json({isAdmin : member.isAdmin}) 
      } catch (error) {
+       
       res.status(500).json({ message: "Something went wrong" });
      }
      

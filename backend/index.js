@@ -5,6 +5,23 @@ const db = require("./utils/database");
 
 const app = express();
 
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://127.0.0.1:5500',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+io.engine.on("connection_error", (err) => {
+  console.log(err.req);      // the request object
+  console.log(err.code);     // the error code, for example 1
+  console.log(err.message);  // the error message, for example "Session ID unknown"
+  console.log(err.context);  // some additional error context
+});
+
+
 app.use(express.json());
 
 const corsOptions = {
@@ -37,9 +54,11 @@ Group.belongsToMany(User, { through: group_member, onDelete: 'CASCADE', onUpdate
 
 
 const userRoute = require('./routes/user');
-const chatRoute = require('./routes/chat');
+const chatRoute = require('./routes/chat')(io);
 const groupRoute = require('./routes/group');
 const adminRoute = require('./routes/admin');
+const { Socket } = require("socket.io");
+
 
 
 app.use('/user', userRoute);
@@ -51,10 +70,12 @@ const PORT = process.env.PORT || 3000;
 
 db.sync()
   .then(() => {
-    app.listen(PORT, () => {
+    http.listen(PORT, () => {
       console.log(`Server Started At ${PORT}`);
     });
   })
   .catch((err) => {
     console.log(err);
   });
+
+  
