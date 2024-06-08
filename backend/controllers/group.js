@@ -47,7 +47,7 @@ exports.getGroup = async (req, res, next) => {
         id: groupIds
       }
     });
-
+   debugger;
     res.status(200).json({ result: groups });
   } catch (err) {
     res.status(500).json({ message: err.message });
