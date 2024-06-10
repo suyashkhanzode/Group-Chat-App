@@ -3,7 +3,7 @@ document.getElementById('groupForm').addEventListener("submit", (event) => {
   event.preventDefault();
   const name = document.getElementById("grpname").value;
   axios.post(
-    `http://localhost:3001/group/add-group`,
+    `http://13.201.0.34:3001/group/add-group`,
     {
       name: name,
     },

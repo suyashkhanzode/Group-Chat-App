@@ -8,7 +8,7 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http, {
   cors: {
-    origin: "http://localhost",
+    origin: "http://13.201.0.34",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -24,7 +24,7 @@ io.engine.on("connection_error", (err) => {
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost",
+  origin: "http://13.201.0.34:3001",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 200,
