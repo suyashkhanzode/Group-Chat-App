@@ -5,7 +5,7 @@ document.getElementById('signUpForm').addEventListener('submit',(event)=>{
     const email = document.getElementById('email').value;
     const phnumber = document.getElementById('phnumber').value;
     const password = document.getElementById('password').value;
-    axios.post(`http://localhost:3000/user/sign-up`,{
+    axios.post(`http://localhost:3001/user/sign-up`,{
         name:name,
         email : email,
         phnumber : phnumber,

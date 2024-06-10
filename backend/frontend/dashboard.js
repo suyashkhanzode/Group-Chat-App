@@ -1,5 +1,5 @@
 const token = window.sessionStorage.getItem("token");
-const socket = io("http://localhost:3000", {
+const socket = io("http://localhost:3001", {
   withCredentials: true,
   auth: {
     Authorization: token,
@@ -81,7 +81,7 @@ function showChats(chat) {
 
 function getGroups() {
   axios
-    .get("http://localhost:3000/group/get-group", {
+    .get("http://localhost:3001/group/get-group", {
       headers: {
         Authorization: token,
       },
@@ -111,7 +111,7 @@ document.getElementById("addUserBtn").addEventListener("click", (event) => {
   document.getElementById("searchInput").value = "";
 
   axios
-    .post(`http://localhost:3000/admin/add-member/${groupId}`, { email })
+    .post(`http://localhost:3001/admin/add-member/${groupId}`, { email })
     .then((response) => {
       alert(response.data.message);
     })
@@ -128,7 +128,7 @@ document.getElementById("removeUserBtn").addEventListener("click", (event) => {
   document.getElementById("searchInput").value = "";
 
   axios
-    .post(`http://localhost:3000/admin/remove-member/${groupId}`, { email })
+    .post(`http://localhost:3001/admin/remove-member/${groupId}`, { email })
     .then((response) => {
       alert(response.data.message);
     })
@@ -145,7 +145,7 @@ document.getElementById("promoteUserBtn").addEventListener("click", (event) => {
   document.getElementById("searchInput").value = "";
 
   axios
-    .put(`http://localhost:3000/admin/promote-member/${groupId}`, { email })
+    .put(`http://localhost:3001/admin/promote-member/${groupId}`, { email })
     .then((response) => {
       alert(response.data.message);
     })
@@ -159,7 +159,7 @@ function isMemberAdmin() {
   const groupId = Number(urlParams.get("groupId"));
 
   axios
-    .get(`http://localhost:3000/admin/is-admin/${groupId}`, {
+    .get(`http://localhost:3001/admin/is-admin/${groupId}`, {
       headers: {
         Authorization: token,
       },
@@ -187,7 +187,7 @@ document.getElementById("fileSendBtn").addEventListener("click", () => {
   }
   const urlParams = new URLSearchParams(window.location.search);
   const groupId = Number(urlParams.get("groupId"));
-  axios.post(`http://localhost:3000/file/upload/${groupId}`, fileData, {
+  axios.post(`http://localhost:3001/file/upload/${groupId}`, fileData, {
     headers: {
       Authorization: token,
       accept: "application/json",

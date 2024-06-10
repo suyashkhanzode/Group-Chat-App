@@ -2,7 +2,7 @@ document.getElementById('logInForm').addEventListener('submit',(event)=>{
     event.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    axios.post(`http://localhost:3000/user/login`,{
+    axios.post(`http://localhost:3001/user/login`,{
         email : email,
         password : password
     })
